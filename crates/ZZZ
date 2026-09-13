@@ -1,0 +1,6 @@
+[dependencies.anime-launcher-sdk]
+git = "https://github.com/an-anime-team/anime-launcher-sdk"
+tag = "1.36.11"
+features = ["all", "zzz"]
+
+# path = "../anime-launcher-sdk" # ! for dev purposes only
