@@ -1,13 +1,53 @@
 [package]
-name = "unified-launcher"
-version = "v0.1"
+name = "Unified-Launcher"
+version = "0.1.0"
 description = "Unified Launcher"
 authors = []
 homepage = "https://github.com/susucat1/Unified-Launcher"
 repository = "https://github.com/susucat1/Unified-Launcher"
-license = "GPL-3.0"
-edition = "2026"
+license = "GPL-3.0-only"
+edition = "2024"
 build = "build.rs"
+publish = false
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[build-dependencies]
+glib-build-tools = "0.20"
+
+[dependencies]
+# UI Framework
+relm4 = { version = "0.9.1", features = ["macros", "libadwaita"] }
+gtk = { package = "gtk4", version = "0.9.6", features = ["v4_16"] }
+adw = { package = "libadwaita", version = "0.7.2", features = ["v1_5"] }
+
+# System & Utilities
+mimalloc = { version = "0.1", default-features = false }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "ansi", "env-filter"] }
+serde_json = { version = "1.0", default-features = false, features = ["std"] }
+open = "5.3"
+whatadistro = "0.1"
+
+# Data & Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+cached = { version = "0.55", features = ["proc_macro"] }
+md-5 = "0.10"
+enum-ordinalize = "4.3"
+
+# Error Handling & Logging
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Localization
+fluent-templates = "0.13"
+unic-langid = "0.9"
 
 [workspace]
 resolver = "2"
