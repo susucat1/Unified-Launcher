@@ -22,9 +22,7 @@ glib-build-tools = "0.20"
 
 [dependencies]
 # UI Framework (Relm4 / GTK4 / Libadwaita)
-relm4 = { version = "0.9.1", features = ["macros", "libadwaita"] }
-gtk = { package = "gtk4", version = "0.9.6", features = ["v4_16"] }
-adw = { package = "libadwaita", version = "0.7.2", features = ["v1_5"] }
+iced = { version = "0.13", features = ["tokio"] }
 
 # System & Memory Allocation
 mimalloc = { version = "0.1", default-features = false }
@@ -48,16 +46,16 @@ fluent-templates = "0.13"
 unic-langid = "0.9"
 
 # Workspace sub-crates
-Honkai-Impact = { path = "crates/Honkai-Impact", optional = true }
-Genshin-Impact = { path = "crates/Genshin-Impact", optional = true }
-StarRail = { path = "crates/StarRail", optional = true }
-ZZZ = { path = "crates/ZZZ", optional = true }
+Honkai-Impact = { path = "crates/launcher/Honkai", optional = true }
+Genshin-Impact = { path = "crates/launcher/Genshin", optional = true }
+StarRail = { path = "crates/launcher/StarRail", optional = true }
+ZZZ = { path = "crates/launcher/ZZZ", optional = true }
 
 [workspace]
 resolver = "2"
 members = [
-    "crates/Honkai-Impact",
-    "crates/Genshin-Impact",
-    "crates/StarRail",
-    "crates/ZZZ",
+    "crates/launcher/Honkai",
+    "crates/launcher/Genshin",
+    "crates/launcher/StarRail",
+    "crates/launcher/ZZZ",
 ]
