@@ -8,6 +8,9 @@ on:
       - "Cargo.toml"
       - "Cargo.lock"
       - "build.rs"
+      - "rustfmt.toml"
+      - ".github/workflows/check_source_code.yml"
+
   pull_request:
     branches: [ "main", "next" ]
     paths:
@@ -15,45 +18,55 @@ on:
       - "Cargo.toml"
       - "Cargo.lock"
       - "build.rs"
+      - "rustfmt.toml"
+      - ".github/workflows/check_source_code.yml"
+
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}
 
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: 0
 
 jobs:
-  check_source_code:
+  fmt:
+    name: Rustfmt
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            build-essential \
-            pkg-config \
-            libgtk-4-dev \
-            libadwaita-1-dev \
-            libssl-dev \
-            protobuf-compiler \
-            cmake
+      - uses: actions/checkout@v4
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          components: clippy, rustfmt
-
-      - uses: Swatinem/rust-cache@v2
+          components: rustfmt
 
       - name: Check formatting
         run: cargo fmt --check
 
-      - name: Lint code with Clippy
+  check:
+    name: Cargo Check & Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgtk-4-dev \
+            libadwaita-1-dev
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check code & targets
+        run: cargo check --workspace --all-targets
+
+      - name: Lint with Clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
