@@ -6,7 +6,9 @@ on:
 
 jobs:
   redirect_to_next:
-    if: github.base_ref == 'main'
+    if: >
+      github.base_ref == 'main' &&
+      (github.event.action != 'edited' || github.event.changes.base != null)
     runs-on: ubuntu-latest
 
     permissions:
@@ -16,13 +18,11 @@ jobs:
       - name: Retarget PR to `next` and comment
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          # 1.
-          gh pr edit "$PR_URL" --base next
-
-          # 2.
-          gh pr comment "$PR_URL" --body "Your PR was set to target \`main\`, PRs should target \`next\`.
+          gh pr edit "$PR_NUMBER" --base next
+          gh pr comment "$PR_NUMBER" --body "Your PR was set to target \`main\`, but PRs should target \`next\`.
 
           The base branch of this PR has been automatically changed to \`next\`.
           Please verify that there are no merge conflicts."
