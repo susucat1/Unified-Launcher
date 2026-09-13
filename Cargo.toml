@@ -1,0 +1,19 @@
+[package]
+name = "unified-launcher"
+version = "v0.1"
+description = "Unified Launcher"
+authors = []
+homepage = "https://github.com/susucat1/Unified-Launcher"
+repository = "https://github.com/susucat1/Unified-Launcher"
+license = "GPL-3.0"
+edition = "2026"
+build = "build.rs"
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/Honkai-Impact",
+    "crates/Genshin-Impact",
+    "crates/StarRail",
+    "crates/ZZZ",
+]
