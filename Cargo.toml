@@ -11,8 +11,8 @@ build = "build.rs"
 publish = false
 
 [profile.release]
-opt-level = "z"
-lto = true
+opt-level = "s"
+lto = "fat"
 codegen-units = 1
 panic = "abort"
 strip = true
@@ -21,19 +21,17 @@ strip = true
 glib-build-tools = "0.20"
 
 [dependencies]
-# UI Framework
+# UI Framework (Relm4 / GTK4 / Libadwaita)
 relm4 = { version = "0.9.1", features = ["macros", "libadwaita"] }
 gtk = { package = "gtk4", version = "0.9.6", features = ["v4_16"] }
 adw = { package = "libadwaita", version = "0.7.2", features = ["v1_5"] }
 
-# System & Utilities
+# System & Memory Allocation
 mimalloc = { version = "0.1", default-features = false }
-tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "ansi", "env-filter"] }
-serde_json = { version = "1.0", default-features = false, features = ["std"] }
 open = "5.3"
 whatadistro = "0.1"
 
-# Data & Serialization
+# Data, State & Serialization
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 cached = { version = "0.55", features = ["proc_macro"] }
@@ -43,11 +41,17 @@ enum-ordinalize = "4.3"
 # Error Handling & Logging
 anyhow = "1.0"
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "ansi", "env-filter"] }
 
 # Localization
 fluent-templates = "0.13"
 unic-langid = "0.9"
+
+# Workspace sub-crates
+Honkai-Impact = { path = "crates/Honkai-Impact", optional = true }
+Genshin-Impact = { path = "crates/Genshin-Impact", optional = true }
+StarRail = { path = "crates/StarRail", optional = true }
+ZZZ = { path = "crates/ZZZ", optional = true }
 
 [workspace]
 resolver = "2"
