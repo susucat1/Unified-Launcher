@@ -17,8 +17,13 @@ on:
       - "build.rs"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
 
 jobs:
   check_source_code:
@@ -30,18 +35,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y build-essential pkg-config libgtk-4-dev libadwaita-1-dev git curl cmake libssl-dev protobuf-compiler
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            pkg-config \
+            libgtk-4-dev \
+            libadwaita-1-dev \
+            libssl-dev \
+            protobuf-compiler \
+            cmake
 
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           components: clippy, rustfmt
-          
+
       - uses: Swatinem/rust-cache@v2
 
-      - name: Check source code
-        run: cargo check --verbose
+      - name: Check formatting
+        run: cargo fmt --check
 
-      - name: Lint code
-        run: cargo clippy -- -D warnings
+      - name: Lint code with Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
